@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{04E345F8-1463-6965-D8C1-83A5E903B950}</ProjectGuid>
+    <ProjectGuid>{995D36AD-ACE7-ED52-EA96-1EC7142B31A5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>UnityEditor.TestRunner</AssemblyName>
@@ -56,6 +56,7 @@
     <Analyzer Include="/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/AddIns/MonoDevelop.Unity/Analyzers/Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Callbacks/RerunCallback.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Utils/ITestListCache.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Messages/EnterPlayMode.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Utils/CachingTestListProvider.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/Api/IErrorCallbacks.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/Api/ITestRunSettings.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestSettings/TestSettings.cs" />
+    <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Callbacks/RerunCallbackData.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunnerWindowSettings.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/Api/RunState.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/UnityTestProtocol/ITestRunnerApiMapper.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/Api/CallbacksHolder.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRun/TestRunCanceledException.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Callbacks/WindowResultUpdater.cs" />
+    <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestLaunchers/PlayerLauncherTestRunSettings.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Callbacks/TestRunnerCallback.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/AssemblyInfo.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/UnityTestProtocol/AssemblyCompilationErrorsMessage.cs" />
@@ -190,8 +193,10 @@
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/CommandLineTest/ExitCallbacks.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestLaunchers/RuntimeTestLauncherBase.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/Api/TestMode.cs" />
+    <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/GUI/UITestRunnerFilter.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/UnityTestProtocol/TestPlanMessage.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Utils/TestListJob.cs" />
+    <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Callbacks/RerunCallbackInitializer.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/UnityTestProtocol/TestRunnerApiMapper.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/Api/CallbacksDelegator.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestLaunchers/PlatformSetup/PlatformSpecificSetup.cs" />
@@ -210,11 +215,6 @@
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestLaunchers/DelayedCallback.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRun/TestJobRunner.cs" />
     <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/UnityTestProtocol/TestFinishedMessage.cs" />
-    <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Callbacks/RerunCallback.cs" />
-    <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Callbacks/RerunCallbackData.cs" />
-    <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestLaunchers/PlayerLauncherTestRunSettings.cs" />
-    <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/GUI/UITestRunnerFilter.cs" />
-    <Compile Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/TestRunner/Callbacks/RerunCallbackInitializer.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Library/PackageCache/com.unity.test-framework@1.1.18/UnityEditor.TestRunner/UnityEditor.TestRunner.asmdef" />
@@ -785,7 +785,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="UnityEngine.TestRunner.csproj">
-      <Project>{B6D652B1-9ABE-5A47-CBAA-6370B46B8E2B}</Project>
+      <Project>{284C01A2-1AAD-26E4-A68C-6F789554B549}</Project>
       <Name>UnityEngine.TestRunner</Name>
     </ProjectReference>
   </ItemGroup>
