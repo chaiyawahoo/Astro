@@ -72,6 +72,3 @@ crashlytics-build.properties
 
 # MacOS
 .DS_Store
-
-# Visual Studio
-.vs
