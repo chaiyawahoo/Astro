@@ -31,14 +31,20 @@ public class PlayerShip : MonoBehaviour {
     public float CurrentAcceleration { get; private set; } = 0f;
     public float CurrentVelocity { get; private set; } = 0f;
     public Quaternion CurrentRotationGoal { get; private set; } = Quaternion.identity;
+    public Quaternion CurrentPitchGoal { get; private set; } = Quaternion.identity;
+    public Quaternion CurrentRollGoal { get; private set; } = Quaternion.identity;
+    public Quaternion CurrentYawGoal { get; private set; } = Quaternion.identity;
 
     public float ThrottleCoefficient { get; private set; } = 0.01f;
-    public float PitchCoefficient { get; private set; } = 2f;
-    public float RollCoefficient { get; private set; } = 3f;
+    public float PitchCoefficient { get; private set; } = 1.75f;
+    public float RollCoefficient { get; private set; } = 2.5f;
     public float YawCoefficient { get; private set; } = 0.25f;
     // TODO: lerp sensitivity per axis
     // TODO: allow debug tweaking
     public float RotationCoefficient { get; private set; } = 0.05f;
+    public float PitchSlerpSpeed { get; private set; } = 0.05f;
+    public float RollSlerpSpeed { get; private set; } = 0.05f;
+    public float YawSlerpSpeed { get; private set; } = 0.05f;
 
     private void Awake() {
         rb = GetComponent<Rigidbody>();
@@ -80,6 +86,7 @@ public class PlayerShip : MonoBehaviour {
     }
 
     private void Rotate() {
+        //cam.transform.rotation = Quaternion.Slerp(rb.rotation, CurrentRotationGoal, RotationCoefficient * 3f); // TODO: make variable for this value
         rb.rotation = Quaternion.Slerp(rb.rotation, CurrentRotationGoal, RotationCoefficient);
     }
 
@@ -101,7 +108,11 @@ public class PlayerShip : MonoBehaviour {
         float deltaPitch = pitchInput * PitchCoefficient;
         float deltaYaw = yawInput * YawCoefficient;
         Vector3 deltaRotation = new Vector3(deltaPitch, deltaYaw, deltaRoll);
-        CurrentRotationGoal *= Quaternion.Euler(deltaRotation);
+        //CurrentRotationGoal *= Quaternion.Euler(deltaRotation);
+        CurrentPitchGoal = Quaternion.Euler(Vector3.right * deltaPitch);
+        CurrentRollGoal = Quaternion.Euler(Vector3.forward * deltaRoll);
+        CurrentYawGoal = Quaternion.Euler(Vector3.up * deltaYaw);
+        CurrentRotationGoal *= CurrentPitchGoal * CurrentRollGoal * CurrentYawGoal;
     }
 
     private void UpdateUIText() {
