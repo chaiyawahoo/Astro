@@ -9,9 +9,9 @@ public class PlayerShip : MonoBehaviour {
     private Rigidbody rb;
     private PlayerInput pInput;
 
-    // Other Game Objects
-    private GameObject cam;
-    private GameObject ship;
+    // Children
+    private Transform cam;
+    private Transform ship;
 
     // Canvas Objects
     private GameObject canvas;
@@ -35,26 +35,23 @@ public class PlayerShip : MonoBehaviour {
     public Quaternion CurrentRollGoal { get; private set; } = Quaternion.identity;
     public Quaternion CurrentYawGoal { get; private set; } = Quaternion.identity;
 
-    public float ThrottleCoefficient { get; private set; } = 0.01f;
-    public float PitchCoefficient { get; private set; } = 1.75f;
-    public float RollCoefficient { get; private set; } = 2.5f;
-    public float YawCoefficient { get; private set; } = 0.25f;
-    // TODO: lerp sensitivity per axis
+    public float ThrottleCoefficient { get; private set; } = 0.005f;
+    public float PitchCoefficient { get; private set; } = 1f;
+    public float RollCoefficient { get; private set; } = 1.5f;
+    public float YawCoefficient { get; private set; } = 0.125f;
     // TODO: allow debug tweaking
-    public float RotationCoefficient { get; private set; } = 0.05f;
-    public float PitchSlerpSpeed { get; private set; } = 0.05f;
-    public float RollSlerpSpeed { get; private set; } = 0.05f;
-    public float YawSlerpSpeed { get; private set; } = 0.05f;
+    public float RotationDelayFrames { get; private set; } = 20f;
+    public float CameraLookAhead { get; private set; } = 3f;
 
     private void Awake() {
         rb = GetComponent<Rigidbody>();
         pInput = GetComponent<PlayerInput>();
-        CurrentRotationGoal = rb.rotation;
+        CurrentRotationGoal = transform.rotation;
     }
 
     private void Start() {
-        cam = transform.Find("Main Camera").gameObject;
-        ship = transform.Find("Ship").gameObject;
+        cam = transform.Find("Main Camera");
+        ship = transform.Find("Ship");
 
         canvas = GameObject.Find("Canvas");
         throttleText = canvas.transform.Find("Throttle Text").GetComponent<Text>();
@@ -65,10 +62,10 @@ public class PlayerShip : MonoBehaviour {
 
     private void Update() {
         UpdateUIText();
+        HandleInput();
     }
 
     private void FixedUpdate() {
-        HandleInput();
         Move();
         Rotate();
     }
@@ -86,8 +83,11 @@ public class PlayerShip : MonoBehaviour {
     }
 
     private void Rotate() {
-        //cam.transform.rotation = Quaternion.Slerp(rb.rotation, CurrentRotationGoal, RotationCoefficient * 3f); // TODO: make variable for this value
-        rb.rotation = Quaternion.Slerp(rb.rotation, CurrentRotationGoal, RotationCoefficient);
+        cam.transform.rotation = Quaternion.Lerp(transform.rotation, CurrentRotationGoal, 1f / RotationDelayFrames * CameraLookAhead);
+        Quaternion rotation = Quaternion.Lerp(transform.rotation, CurrentRotationGoal, 1f / RotationDelayFrames) * Quaternion.Inverse(transform.rotation);
+        transform.RotateAround(ship.position, Vector3.right, rotation.eulerAngles.x);
+        transform.RotateAround(ship.position, Vector3.up, rotation.eulerAngles.y);
+        transform.RotateAround(ship.position, Vector3.forward, rotation.eulerAngles.z);
     }
 
     private void HandleInput() {
@@ -107,8 +107,6 @@ public class PlayerShip : MonoBehaviour {
         float deltaRoll = rollInput * RollCoefficient;
         float deltaPitch = pitchInput * PitchCoefficient;
         float deltaYaw = yawInput * YawCoefficient;
-        Vector3 deltaRotation = new Vector3(deltaPitch, deltaYaw, deltaRoll);
-        //CurrentRotationGoal *= Quaternion.Euler(deltaRotation);
         CurrentPitchGoal = Quaternion.Euler(Vector3.right * deltaPitch);
         CurrentRollGoal = Quaternion.Euler(Vector3.forward * deltaRoll);
         CurrentYawGoal = Quaternion.Euler(Vector3.up * deltaYaw);
