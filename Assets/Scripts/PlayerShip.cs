@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
+//using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody), typeof(PlayerInput))]
 public class PlayerShip : MonoBehaviour {
+
+    public GameObject MissilePrefab;
 
     // Components
     private Rigidbody rb;
@@ -12,12 +14,6 @@ public class PlayerShip : MonoBehaviour {
     // Children
     private Transform cam;
     private Transform ship;
-
-    // Canvas Objects
-    private GameObject canvas;
-    private Text throttleText;
-    private Text accelerationText;
-    private Text velocityText;
 
     public float MinimumThrottle { get; private set; } = 0f;
     public float MinimumAcceleration { get; private set; } = 0f;
@@ -30,39 +26,36 @@ public class PlayerShip : MonoBehaviour {
     public float CurrentThrottle { get; private set; } = 0f;
     public float CurrentAcceleration { get; private set; } = 0f;
     public float CurrentVelocity { get; private set; } = 0f;
+
     public Quaternion CurrentRotationGoal { get; private set; } = Quaternion.identity;
     public Quaternion CurrentPitchGoal { get; private set; } = Quaternion.identity;
     public Quaternion CurrentRollGoal { get; private set; } = Quaternion.identity;
     public Quaternion CurrentYawGoal { get; private set; } = Quaternion.identity;
 
     public float ThrottleCoefficient { get; private set; } = 0.005f;
-    public float PitchCoefficient { get; private set; } = 1f;
-    public float RollCoefficient { get; private set; } = 1.5f;
+    public float PitchCoefficient { get; private set; } = 1.25f;
+    public float RollCoefficient { get; private set; } = 1.75f;
     public float YawCoefficient { get; private set; } = 0.125f;
     // TODO: allow debug tweaking
-    public float RotationDelayFrames { get; private set; } = 20f;
-    public float CameraLookAhead { get; private set; } = 3f;
+    public float RotationDelaySeconds { get; private set; } = 1f / 3f;
+    public float ShipRotationMultiplier { get; private set; } = 5f;
+
+    public bool Firing { get; private set; } = false;
 
     private void Awake() {
         rb = GetComponent<Rigidbody>();
         pInput = GetComponent<PlayerInput>();
-        CurrentRotationGoal = transform.rotation;
+        CurrentRotationGoal = rb.rotation;
     }
 
     private void Start() {
         cam = transform.Find("Main Camera");
         ship = transform.Find("Ship");
-
-        canvas = GameObject.Find("Canvas");
-        throttleText = canvas.transform.Find("Throttle Text").GetComponent<Text>();
-        accelerationText = canvas.transform.Find("Acceleration Text").GetComponent<Text>();
-        velocityText = canvas.transform.Find("Velocity Text").GetComponent<Text>();
-        UpdateUIText();
     }
 
     private void Update() {
-        UpdateUIText();
         HandleInput();
+        Fire();
     }
 
     private void FixedUpdate() {
@@ -83,11 +76,24 @@ public class PlayerShip : MonoBehaviour {
     }
 
     private void Rotate() {
-        cam.transform.rotation = Quaternion.Lerp(transform.rotation, CurrentRotationGoal, 1f / RotationDelayFrames * CameraLookAhead);
-        Quaternion rotation = Quaternion.Lerp(transform.rotation, CurrentRotationGoal, 1f / RotationDelayFrames) * Quaternion.Inverse(transform.rotation);
-        transform.RotateAround(ship.position, Vector3.right, rotation.eulerAngles.x);
-        transform.RotateAround(ship.position, Vector3.up, rotation.eulerAngles.y);
-        transform.RotateAround(ship.position, Vector3.forward, rotation.eulerAngles.z);
+        float playerLerp = 1f / (RotationDelaySeconds / Time.fixedDeltaTime);
+        float shipLerp = ShipRotationMultiplier * playerLerp;
+        Quaternion rotation = Quaternion.Lerp(rb.rotation, CurrentRotationGoal, playerLerp);
+        Transform playerTransform = transform;
+        rotation *= Quaternion.Inverse(rb.rotation);
+        playerTransform.RotateAround(ship.position, Vector3.right, rotation.eulerAngles.x);
+        playerTransform.RotateAround(ship.position, Vector3.up, rotation.eulerAngles.y);
+        playerTransform.RotateAround(ship.position, Vector3.forward, rotation.eulerAngles.z);
+        rb.MoveRotation(playerTransform.rotation);
+        rb.MovePosition(playerTransform.position);
+        ship.transform.rotation = Quaternion.Lerp(rb.rotation, CurrentRotationGoal, shipLerp);
+    }
+
+    private void Fire() {
+        //if (Firing) {
+        //    Instantiate(MissilePrefab, ship.transform.position, ship.transform.rotation);
+        //    Firing = false;
+        //}
     }
 
     private void HandleInput() {
@@ -111,11 +117,26 @@ public class PlayerShip : MonoBehaviour {
         CurrentRollGoal = Quaternion.Euler(Vector3.forward * deltaRoll);
         CurrentYawGoal = Quaternion.Euler(Vector3.up * deltaYaw);
         CurrentRotationGoal *= CurrentPitchGoal * CurrentRollGoal * CurrentYawGoal;
+        // Handle Firing
+        if (!Firing) {
+            Firing = pInput.actions["Fire"].phase == InputActionPhase.Started;
+        }
     }
 
-    private void UpdateUIText() {
-        throttleText.text = string.Format("Current Throttle: {0}%", CurrentThrottle * 100f);
-        accelerationText.text = string.Format("Current Acceleration: {0} m/s^2", CurrentAcceleration);
-        velocityText.text = string.Format("Current Velocity: {0} m/s", CurrentVelocity);
+    private void Die() {
+        transform.position = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+        CurrentThrottle = 0f;
+        CurrentAcceleration = 0f;
+        CurrentVelocity = 0f;
+        CurrentRotationGoal = rb.rotation;
+        CurrentPitchGoal = Quaternion.identity;
+        CurrentRollGoal = Quaternion.identity;
+        CurrentYawGoal = Quaternion.identity;
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        Debug.Log("collide");
+        Die();
     }
 }
