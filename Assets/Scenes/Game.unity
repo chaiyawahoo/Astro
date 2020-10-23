@@ -769,7 +769,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a81ed944655742e58bb35f89f1309de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MissilePrefab: {fileID: 0}
+  MissilePrefab: {fileID: 3327973551159848654, guid: 362f8a16e0e594d248d75f6c477e5a5f,
+    type: 3}
 --- !u!1 &1346864290
 GameObject:
   m_ObjectHideFlags: 0

@@ -90,10 +90,10 @@ public class PlayerShip : MonoBehaviour {
     }
 
     private void Fire() {
-        //if (Firing) {
-        //    Instantiate(MissilePrefab, ship.transform.position, ship.transform.rotation);
-        //    Firing = false;
-        //}
+        if (Firing) {
+            Instantiate(MissilePrefab, ship.transform.position, ship.transform.rotation);
+            Firing = false;
+        }
     }
 
     private void HandleInput() {
@@ -118,9 +118,7 @@ public class PlayerShip : MonoBehaviour {
         CurrentYawGoal = Quaternion.Euler(Vector3.up * deltaYaw);
         CurrentRotationGoal *= CurrentPitchGoal * CurrentRollGoal * CurrentYawGoal;
         // Handle Firing
-        if (!Firing) {
-            Firing = pInput.actions["Fire"].phase == InputActionPhase.Started;
-        }
+        Firing = pInput.actions["Fire"].triggered;
     }
 
     private void Die() {
